@@ -1,0 +1,15 @@
+{
+  "name": "finance-tracker-backend-mock",
+  "version": "1.0.0",
+  "description": "Mocked backend API for personal finance tracker",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node src/server.js",
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  },
+  "type": "module"
+}
