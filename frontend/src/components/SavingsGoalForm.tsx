@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { SavingsGoalForm as SavingsGoalFormType, SavingsGoal } from '../types';
 import { useCreateSavingsGoal, useUpdateSavingsGoal } from '../hooks/useApi';
-import Button from './ui/Button';
-import Input from './ui/Input';
+import Button from './ui/button';
+import Input from './ui/input';
 import Modal from './ui/Modal';
 
 interface SavingsGoalFormProps {

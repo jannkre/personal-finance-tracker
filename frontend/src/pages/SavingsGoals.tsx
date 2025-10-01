@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { useSavingsGoals, useDeleteSavingsGoal } from '../hooks/useApi';
 import { SavingsGoal } from '../types';
-import Button from '../components/ui/Button';
+import Button from '../components/ui/button';
 import SavingsGoalCard from '../components/SavingsGoalCard';
 import SavingsGoalForm from '../components/SavingsGoalForm';
 import ContributionForm from '../components/ContributionForm';

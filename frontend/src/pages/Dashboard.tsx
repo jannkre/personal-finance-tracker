@@ -4,7 +4,7 @@ import { format, parseISO } from 'date-fns';
 import { PlusIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../context/AuthContext';
 import { useTransactions, useSavingsGoals } from '../hooks/useApi';
-import Button from '../components/ui/Button';
+import Button from '../components/ui/button';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const Dashboard: React.FC = () => {

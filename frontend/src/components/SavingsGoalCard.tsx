@@ -2,7 +2,7 @@ import React from 'react';
 import { format, parseISO, differenceInDays } from 'date-fns';
 import { PencilIcon, TrashIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { SavingsGoal } from '../types';
-import Button from './ui/Button';
+import Button from './ui/button';
 
 interface SavingsGoalCardProps {
   goal: SavingsGoal;
