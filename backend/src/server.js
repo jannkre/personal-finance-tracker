@@ -113,6 +113,46 @@ app.get('/api/auth/profile', authenticateToken, (req, res) => {
   });
 });
 
+app.post('/api/auth/change-password', authenticateToken, (req, res) => {
+  const { current_password, new_password } = req.body;
+  
+  if (!current_password || !new_password) {
+    return res.status(400).json({
+      success: false,
+      error: 'Current password and new password are required'
+    });
+  }
+
+  if (new_password.length < 6) {
+    return res.status(400).json({
+      success: false,
+      error: 'New password must be at least 6 characters long'
+    });
+  }
+  
+  const user = users.find(u => u.id === req.user.userId);
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      error: 'User not found'
+    });
+  }
+  
+  // In real app, verify current password hash
+  // For mock, just accept any current password
+  
+  // Update password hash (in mock, we just update a timestamp)
+  user.password_hash = 'new_mock_hash';
+  user.updated_at = new Date().toISOString();
+  
+  res.json({
+    success: true,
+    data: {
+      message: 'Password changed successfully'
+    }
+  });
+});
+
 // ACCOUNT ROUTES
 app.get('/api/accounts', authenticateToken, (req, res) => {
   const userAccounts = findEntitiesByUserId(accounts, req.user.userId);

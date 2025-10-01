@@ -81,6 +81,11 @@ class ApiClient {
     return this.handleResponse(response);
   }
 
+  async changePassword(passwordData: { current_password: string; new_password: string }): Promise<{ message: string }> {
+    const response = await this.client.post<ApiResponse<{ message: string }>>('/auth/change-password', passwordData);
+    return this.handleResponse(response);
+  }
+
   logout(): void {
     localStorage.removeItem('auth_token');
     window.location.href = '/login';
