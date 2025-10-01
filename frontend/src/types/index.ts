@@ -106,6 +106,12 @@ export interface RegisterForm {
   last_name?: string;
 }
 
+export interface ChangePasswordForm {
+  current_password: string;
+  new_password: string;
+  confirm_password: string;
+}
+
 export interface TransactionForm {
   account_id: number;
   category_id: number;

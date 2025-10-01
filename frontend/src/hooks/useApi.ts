@@ -74,6 +74,13 @@ export const useLogout = () => {
   });
 };
 
+export const useChangePassword = () => {
+  return useMutation({
+    mutationFn: (passwordData: { current_password: string; new_password: string }) => 
+      apiClient.changePassword(passwordData),
+  });
+};
+
 // Account hooks
 export const useAccounts = () => {
   return useQuery({
