@@ -11,7 +11,6 @@ const Login: React.FC = () => {
     password: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [hasUserInteracted, setHasUserInteracted] = useState(false);
 
   const navigate = useNavigate();
   const { setUser } = useAuth();
@@ -20,7 +19,6 @@ const Login: React.FC = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    setHasUserInteracted(true);
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
@@ -43,15 +41,7 @@ const Login: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // Prevent automatic submission from browser autofill
-    if (!hasUserInteracted) {
-      console.log('Form submission prevented - no user interaction detected');
-      return;
-    }
-
+  const handleLogin = async () => {
     if (!validateForm()) {
       return;
     }
@@ -90,7 +80,7 @@ const Login: React.FC = () => {
           </p>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <div className="mt-8 space-y-6">
           <div className="space-y-4">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -102,13 +92,10 @@ const Login: React.FC = () => {
                   name="email"
                   type="email"
                   autoComplete="email"
-                  required
                   className={`input ${errors.email ? 'input-error' : ''}`}
                   placeholder="Enter your email"
                   value={formData.email}
                   onChange={handleChange}
-                  onKeyDown={() => setHasUserInteracted(true)}
-                  onFocus={() => setHasUserInteracted(true)}
                 />
                 {errors.email && (
                   <p className="mt-1 text-sm text-danger-600">{errors.email}</p>
@@ -126,13 +113,10 @@ const Login: React.FC = () => {
                   name="password"
                   type="password"
                   autoComplete="current-password"
-                  required
                   className={`input ${errors.password ? 'input-error' : ''}`}
                   placeholder="Enter your password"
                   value={formData.password}
                   onChange={handleChange}
-                  onKeyDown={() => setHasUserInteracted(true)}
-                  onFocus={() => setHasUserInteracted(true)}
                 />
                 {errors.password && (
                   <p className="mt-1 text-sm text-danger-600">{errors.password}</p>
@@ -149,10 +133,10 @@ const Login: React.FC = () => {
 
           <div>
             <button
-              type="submit"
+              type="button"
               disabled={loginMutation.isPending}
               className="btn-primary w-full flex justify-center"
-              onClick={() => setHasUserInteracted(true)}
+              onClick={handleLogin}
             >
               {loginMutation.isPending ? (
                 <>
@@ -170,7 +154,7 @@ const Login: React.FC = () => {
               Demo credentials: demo@example.com / password123
             </p>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );
