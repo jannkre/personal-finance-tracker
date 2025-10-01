@@ -2,8 +2,8 @@ import React from 'react';
 import { format, subDays, startOfMonth, endOfMonth } from 'date-fns';
 import { FunnelIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useAccounts, useCategories } from '../hooks/useApi';
-import Button from './ui/Button';
-import Input from './ui/Input';
+import Button from './ui/button';
+import Input from './ui/input';
 import Select from './ui/Select';
 
 interface FilterState {

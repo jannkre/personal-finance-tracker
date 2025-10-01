@@ -2,7 +2,7 @@ import React from 'react';
 import { format, parseISO } from 'date-fns';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { TransactionWithDetails } from '../types';
-import Button from './ui/Button';
+import Button from './ui/button';
 import LoadingSpinner from './LoadingSpinner';
 
 interface TransactionTableProps {

@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { useTransactions, useDeleteTransaction } from '../hooks/useApi';
 import { TransactionWithDetails } from '../types';
-import Button from '../components/ui/Button';
+import Button from '../components/ui/button';
 import TransactionForm from '../components/TransactionForm';
 import TransactionTable from '../components/TransactionTable';
 import TransactionFilters from '../components/TransactionFilters';
