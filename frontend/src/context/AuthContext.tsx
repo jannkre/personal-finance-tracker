@@ -31,7 +31,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     isLoading: profileLoading,
     isError: profileError,
     isSuccess: profileSuccess
-  } = useProfile();
+  } = useProfile({ enabled: !!token });
 
   useEffect(() => {
     if (!token) {
