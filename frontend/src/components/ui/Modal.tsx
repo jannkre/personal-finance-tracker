@@ -57,6 +57,7 @@ const Modal: React.FC<ModalProps> = ({
                     {title}
                   </Dialog.Title>
                   <Button
+                    type="button"
                     variant="ghost"
                     size="sm"
                     onClick={onClose}
