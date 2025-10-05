@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLogin } from '../hooks/useApi';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import { LoginForm } from '../types';
 import LoadingSpinner from '../components/LoadingSpinner';
 
@@ -14,6 +15,7 @@ const Login: React.FC = () => {
 
   const navigate = useNavigate();
   const { setUser } = useAuth();
+  const { showToast } = useToast();
   const loginMutation = useLogin();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,11 +51,18 @@ const Login: React.FC = () => {
     loginMutation.mutate(formData, {
       onSuccess: (data) => {
         setUser(data.user);
+        showToast({
+          type: 'success',
+          title: 'Login Successful',
+          message: `Welcome back, ${data.user.first_name}!`,
+        });
         navigate('/dashboard');
       },
       onError: (error: any) => {
-        setErrors({
-          submit: error.message || 'Login failed. Please try again.',
+        showToast({
+          type: 'error',
+          title: 'Login Failed',
+          message: error.message || 'Invalid credentials. Please try again.',
         });
       },
     });
@@ -125,11 +134,6 @@ const Login: React.FC = () => {
             </div>
           </div>
 
-          {errors.submit && (
-            <div className="rounded-md bg-danger-50 p-4">
-              <p className="text-sm text-danger-700">{errors.submit}</p>
-            </div>
-          )}
 
           <div>
             <button

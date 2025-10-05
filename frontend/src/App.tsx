@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ToastProvider } from './context/ToastContext';
 import Layout from './components/Layout';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -150,9 +151,11 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Router>
         <AuthProvider>
-          <div className="App">
-            <AppRoutes />
-          </div>
+          <ToastProvider>
+            <div className="App">
+              <AppRoutes />
+            </div>
+          </ToastProvider>
         </AuthProvider>
       </Router>
     </QueryClientProvider>

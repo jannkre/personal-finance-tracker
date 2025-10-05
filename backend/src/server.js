@@ -1,10 +1,13 @@
 import express from 'express';
-import { 
-  users, 
-  accounts, 
-  categories, 
-  transactions, 
-  savingsGoals, 
+import cors from 'cors';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import {
+  users,
+  accounts,
+  categories,
+  transactions,
+  savingsGoals,
   goalContributions,
   createEntity,
   updateEntity,
@@ -12,13 +15,19 @@ import {
   findEntityById,
   findEntitiesByUserId
 } from './mockData.js';
-import { authenticateToken, validateId, cors } from './middleware.js';
+import { authenticateToken, validateId } from './middleware.js';
 
 const app = express();
 const PORT = process.env.PORT || 5001;
+const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-in-production';
+const SALT_ROUNDS = 10;
 
 // Middleware
-app.use(cors);
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization']
+}));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
@@ -33,64 +42,103 @@ app.get('/api/health', (req, res) => {
 });
 
 // AUTH ROUTES
-app.post('/api/auth/register', (req, res) => {
-  const { email, password, first_name, last_name } = req.body;
-  
-  // Check if user exists
-  const existingUser = users.find(u => u.email === email);
-  if (existingUser) {
-    return res.status(400).json({
+app.post('/api/auth/register', async (req, res) => {
+  try {
+    const { email, password, first_name, last_name } = req.body;
+
+    // Check if user exists
+    const existingUser = users.find(u => u.email === email);
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        error: 'User already exists'
+      });
+    }
+
+    // Hash password
+    const password_hash = await bcrypt.hash(password, SALT_ROUNDS);
+
+    // Create new user
+    const newUser = createEntity(users, {
+      email,
+      password_hash,
+      first_name,
+      last_name
+    });
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: newUser.id, email: newUser.email },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    res.status(201).json({
+      success: true,
+      data: {
+        user: {
+          id: newUser.id,
+          email: newUser.email,
+          first_name: newUser.first_name,
+          last_name: newUser.last_name
+        },
+        token
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
       success: false,
-      error: 'User already exists'
+      error: 'Failed to register user'
     });
   }
-  
-  // Create new user
-  const newUser = createEntity(users, {
-    email,
-    password_hash: 'mock_hash', // In real app, hash the password
-    first_name,
-    last_name
-  });
-  
-  res.status(201).json({
-    success: true,
-    data: {
-      user: {
-        id: newUser.id,
-        email: newUser.email,
-        first_name: newUser.first_name,
-        last_name: newUser.last_name
-      },
-      token: 'mock_jwt_token'
-    }
-  });
 });
 
-app.post('/api/auth/login', (req, res) => {
-  const { email, password } = req.body;
-  
-  const user = users.find(u => u.email === email);
-  if (!user) {
-    return res.status(401).json({
+app.post('/api/auth/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = users.find(u => u.email === email);
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        error: 'Invalid credentials'
+      });
+    }
+
+    // Verify password
+    const isValidPassword = await bcrypt.compare(password, user.password_hash);
+    if (!isValidPassword) {
+      return res.status(401).json({
+        success: false,
+        error: 'Invalid credentials'
+      });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: user.id, email: user.email },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    res.json({
+      success: true,
+      data: {
+        user: {
+          id: user.id,
+          email: user.email,
+          first_name: user.first_name,
+          last_name: user.last_name
+        },
+        token
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
       success: false,
-      error: 'Invalid credentials'
+      error: 'Failed to authenticate user'
     });
   }
-  
-  // In real app, verify password hash
-  res.json({
-    success: true,
-    data: {
-      user: {
-        id: user.id,
-        email: user.email,
-        first_name: user.first_name,
-        last_name: user.last_name
-      },
-      token: 'mock_jwt_token'
-    }
-  });
 });
 
 app.get('/api/auth/profile', authenticateToken, (req, res) => {
