@@ -10,17 +10,21 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <PostHogProvider
-      apiKey={process.env.REACT_APP_POSTHOG_KEY}
-      options={{
-        api_host: process.env.REACT_APP_POSTHOG_HOST,
-        defaults: '2025-05-24',
-        capture_exceptions: true,
-        debug: process.env.NODE_ENV === 'development',
-      }}
-    >
+    {process.env.REACT_APP_POSTHOG_KEY ? (
+      <PostHogProvider
+        apiKey={process.env.REACT_APP_POSTHOG_KEY}
+        options={{
+          api_host: process.env.REACT_APP_POSTHOG_HOST,
+          defaults: '2025-05-24',
+          capture_exceptions: true,
+          debug: process.env.NODE_ENV === 'development',
+        }}
+      >
+        <App />
+      </PostHogProvider>
+    ) : (
       <App />
-    </PostHogProvider>
+    )}
   </React.StrictMode>
 );
 
